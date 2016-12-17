@@ -13,16 +13,64 @@ var weather_service_1 = require('../service/weather.service');
 var weather_1 = require('../model/weather');
 var WeatherComponent = (function () {
     function WeatherComponent(service) {
-        var _this = this;
         this.service = service;
         this.weatherData = new weather_1.Weather(null, null, null, null, null);
+        this.currentSpeedUnit = "km/h";
+        this.currentTempUnit = "fahrenheit";
+    }
+    WeatherComponent.prototype.ngOnInit = function () {
+        this.getCurrentLocation();
+    };
+    WeatherComponent.prototype.getCurrentLocation = function () {
+        var _this = this;
         this.service.getCurrentLocation()
             .subscribe(function (position) {
             _this.pos = position;
-            _this.service.getCurrentWeather(_this.pos.coords.latitude, _this.pos.coords.longitude)
-                .subscribe(function (weather) { return console.log(weather); }, function (err) { return console.error(err); });
+            _this.getCurrentWeather();
+            _this.getLocationName();
         }, function (err) { return console.error(err); });
-    }
+    };
+    WeatherComponent.prototype.getCurrentWeather = function () {
+        var _this = this;
+        this.service.getCurrentWeather(this.pos.coords.latitude, this.pos.coords.longitude)
+            .subscribe(function (weather) {
+            _this.weatherData.temp = weather["currently"]["temperature"];
+            _this.weatherData.wind = weather["currently"]["windSpeed"];
+            _this.weatherData.humidity = weather["currently"]["humidity"];
+            _this.weatherData.icon = weather["currently"]["icon"];
+            _this.weatherData.summary = weather["currently"]["summary"];
+            console.log("Weatther", _this.weatherData); //TODO REMOVE
+        }, function (err) { return console.error(err); });
+    };
+    WeatherComponent.prototype.getLocationName = function () {
+        var _this = this;
+        this.service.getLocationName(this.pos.coords.latitude, this.pos.coords.longitude)
+            .subscribe(function (location) {
+            console.log(location); //TODO REMOVE
+            _this.currentLocation = location.results[1].address_components["0"].long_name + ", " + location.results[2].address_components[3].short_name;
+            console.log(_this.currentLocation); //TODO REMOVE
+        });
+    };
+    WeatherComponent.prototype.toggleUnits = function () {
+        this.toggleTempUnits();
+        this.toggleSpeedUnits();
+    };
+    WeatherComponent.prototype.toggleTempUnits = function () {
+        if (this.currentTempUnit == "fahrenheit") {
+            this.currentTempUnit = "celcius";
+        }
+        else {
+            this.currentTempUnit = "fahrenheit";
+        }
+    };
+    WeatherComponent.prototype.toggleSpeedUnits = function () {
+        if (this.currentSpeedUnit == "km/h") {
+            this.currentSpeedUnit = "mph";
+        }
+        else {
+            this.currentSpeedUnit = "km/h";
+        }
+    };
     WeatherComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

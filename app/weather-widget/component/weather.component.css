@@ -29,3 +29,6 @@ p{
     margin:.2rem;
     text-transform:uppercase;
 }
+.small{
+    font-size: 8px;
+}
