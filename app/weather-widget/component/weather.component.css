@@ -1,5 +1,7 @@
 .card{
     box-shadow: 2px 2px 5px 0 rgba(0,0,0,.24);
+    transition:background-color 0.5s;
+    cursor:pointer;
 
 }
 .card,
@@ -7,17 +9,16 @@
 .card-footer {
     border:none;
     border-radius:0;
-    background-color: #00BDD4;
-    color:#FFF;
 }
 
-.card-haeder,
+.card-header,
 .card-footer{
     padding: 1rem .5rem;
+    background-color: rgba(0,0,0,.05);
 }
 
 .card-block{
-    padding:3rem;
+    padding:1rem;
 }
 
 .card-block,
@@ -31,4 +32,10 @@ p{
 }
 .small{
     font-size: 8px;
+}
+#icon{
+    width: 100%;
+}
+#indicator{
+    position: relative;
 }

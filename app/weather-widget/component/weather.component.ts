@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { WeatherService } from '../service/weather.service';
 import { Weather } from '../model/weather';
+import { WEATHER_COLORS } from '../constants/constants';
+declare var Skycons:any;
 
 @Component({
     moduleId: module.id,
@@ -14,8 +16,10 @@ export class WeatherComponent implements OnInit {
     pos: Position;
     weatherData = new Weather(null, null, null, null, null);
     currentSpeedUnit = "km/h";
-    currentTempUnit = "fahrenheit";
+    currentTempUnit = "celcius";
     currentLocation: string;
+    icons=new Skycons();
+    dataReceived =false;
 
     constructor(private service: WeatherService) {
 
@@ -42,7 +46,9 @@ export class WeatherComponent implements OnInit {
                 this.weatherData.humidity = weather["currently"]["humidity"];
                 this.weatherData.icon = weather["currently"]["icon"];
                 this.weatherData.summary = weather["currently"]["summary"];
-                console.log("Weatther", this.weatherData);//TODO REMOVE
+                this.setIcon();
+                this.dataReceived=true;
+                console.log("Weather", this.weatherData);//TODO REMOVE
             },
             err => console.error(err));
     }
@@ -55,10 +61,7 @@ export class WeatherComponent implements OnInit {
                 console.log(this.currentLocation)//TODO REMOVE
             })
     }
-    toggleUnits() {
-        this.toggleTempUnits();
-        this.toggleSpeedUnits();
-    }
+
     toggleTempUnits() {
         if (this.currentTempUnit == "fahrenheit") {
             this.currentTempUnit = "celcius";
@@ -71,6 +74,21 @@ export class WeatherComponent implements OnInit {
             this.currentSpeedUnit = "mph";
         } else {
             this.currentSpeedUnit = "km/h";
+        }
+    }
+
+    setIcon(){
+        this.icons.add("icon", this.weatherData.icon);
+        this.icons.play();
+    }
+
+    setStyles(): Object {
+        if(this.weatherData.icon){
+            this.icons.color=WEATHER_COLORS[this.weatherData.icon]["color"];
+            return WEATHER_COLORS[this.weatherData.icon];
+        } else {
+            this.icons.color=WEATHER_COLORS["default"]["color"];
+            return WEATHER_COLORS["default"];
         }
     }
 }
